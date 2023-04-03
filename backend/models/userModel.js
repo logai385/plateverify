@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import "dotenv/config";
 import { USER } from "../constant/index.js";
 import mongoose from "mongoose";
@@ -37,10 +38,13 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      validate: [
-        validator.isAlphanumeric,
-        "First Name can only have Alphanumeric values. No special characters allowed",
-      ],
+      validate: {
+        validator: function (value) {
+          return /^[A-z][A-z0-9-_\s]{3,60}$/.test(value);
+        },
+        message:
+          "username must be alphanumeric, without special characters. Hyphens and underscores allowed",
+      },
     },
     taxCode: {
       type: String,
@@ -48,15 +52,17 @@ const userSchema = new Schema(
       unique: true,
       validate: [validator.isAlphanumeric, "Please provide a valid tax code"],
     },
-    role: {
+    roles: {
       type: [String],
       eumm: [USER],
     },
-    active: {
+    isActive: {
       type: Boolean,
       default: true,
     },
     passwordChangedAt: Date,
+    forgotPasswordToken: String,
+    forgotPasswordExpiry: Date,
   },
   {
     timestamps: true,
@@ -90,7 +96,22 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (givenPassword) {
   return await bcrypt.compare(givenPassword, this.password);
 };
+//generate forgot password token (string)
+userSchema.methods.getForgotPasswordToken = async function () {
+  // generate a long and randomg string
+  const forgotToken = await crypto.randomBytes(20).toString("hex");
 
+  // getting a hash - make sure to get a hash on backend
+  this.forgotPasswordToken = await crypto
+    .createHash("sha256")
+    .update(forgotToken)
+    .digest("hex");
+
+  //time of token
+  this.forgotPasswordExpiry = Date.now() + 20 * 60 * 1000;
+
+  return forgotToken;
+};
 const User = mongoose.model("User", userSchema);
 
 export default User;

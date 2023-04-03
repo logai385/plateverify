@@ -1,8 +1,9 @@
-import { ADMIN, USER } from "../constant/index.js";
+import { ADMIN,MANAGER, USER } from "../constant/index.js";
 
 const ROLES = {
   User: USER,
   Admin: ADMIN,
+  Manager: MANAGER,
 };
 
 const checkRole = (...allowedRoles) => {
