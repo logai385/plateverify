@@ -13,7 +13,7 @@ const deleteUserAccount = asyncHandler(async (req, res) => {
         res.json({
             success: true,
             message:`User ${deletedUser.fullname} has been deleted`,
-        }r);
+        });
     }
     else{
         res.status(404);

@@ -9,12 +9,16 @@ import mongoSanitize from "express-mongo-sanitize";
 import { morganMiddleware, systemLogs } from "./utils/logger.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import { apiLimiter } from "./middleware/apiLimiter.js";
-
+import cors from "cors";
 // import routes
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import documentRoutes from "./routes/documentRoutes.js";
+import uploadRoutes from "./routes/uploadRoutes.js";
 // create express app
 const app = express();
+// cors
+app.use(cors());
 // set static folder
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
@@ -42,6 +46,8 @@ app.get("/api/v1/test", (req, res) => {
 });
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", apiLimiter, userRoutes);
+app.use("/api/v1/document", apiLimiter, documentRoutes);
+app.use("/api/v1/upload", apiLimiter, uploadRoutes)
 // not found & error handler
 app.use(notFound);
 app.use(errorHandler);

@@ -21,7 +21,7 @@ const loginUser = asyncHandler(async (req, res) => {
     throw new Error("Incorrect email or password");
   }
 
-  if (!existingUser.active) {
+  if (!existingUser.isActive) {
     res.status(400);
     throw new Error(
       "You have been deactivated by the admin and login is impossible. Contact us for enquiries"

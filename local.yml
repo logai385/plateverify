@@ -9,6 +9,7 @@ services:
     volumes:
       - /app/node_modules
       - .:/app
+      - uploads:/app/uploads
     depends_on:
       - mongodb
 #    ports:
@@ -79,6 +80,7 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - pdf_volume:/app/docs
+      - uploads:/app/uploads
     networks:
       - plateverify
 
@@ -91,3 +93,4 @@ volumes:
   mongodb-data:
   static_volume:
   pdf_volume:
+  uploads:
