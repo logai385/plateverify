@@ -10,7 +10,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     // get user profile by lean
     const userProfile = await User.findById(userId,{
-        roles: 0,
         _id: 0,
         forgotPasswordExpiry: 0,
         forgotPasswordToken: 0,
