@@ -3,5 +3,4 @@ logs
 npm-degug.log*
 .git
 node_modules/
-.env
 .npm
